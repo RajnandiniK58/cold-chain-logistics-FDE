@@ -63,4 +63,4 @@ table_name = 'TBL_SC_FLEET_HIST_RAW'
 print(f"Ingesting into {table_name}. This may take a minute...")
 df_legacy.to_sql(table_name, engine, if_exists='replace', index=False, schema='dbo')
 
-print("✅ Legacy data ingestion complete!")
+print("Legacy data ingestion complete!")

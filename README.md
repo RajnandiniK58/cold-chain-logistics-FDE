@@ -131,9 +131,15 @@ streamlit run src/ui.py        # web UI on http://localhost:8501
 
 ## Deployment
 
-The app is deployed on AWS EC2: Streamlit runs as a `systemd` service on port 8501, and SQL Server runs in Docker. The database port stays closed to the public internet.
+The app runs on a single AWS EC2 instance (`c7i-flex.large`, Ubuntu, 30 GB disk, eu-north-1):
 
-<!-- Add after deploying: instance type, region, how the service is started, and the live URL. -->
+- SQL Server 2022 runs in Docker on the instance with a persistent volume and a restart policy.
+- The Streamlit app runs as a `systemd` service on port 8501, so it starts on boot and restarts if it crashes.
+- The app connects to the database over `127.0.0.1`. Port 1433 is closed to the internet.
+- Port 8501 is opened in the security group only while the app is being demoed.
+- Python 3.12 is installed with `uv` and a 4 GB swap file is configured, because the embedding model and SQL Server share 4 GB of RAM.
+- Microsoft ODBC Driver 18 is installed from Microsoft's package repository.
+- Secrets live in a `.env` file on the server (permissions `600`) and never in Git.
 
 ## Design decisions
 
@@ -150,3 +156,5 @@ The app is deployed on AWS EC2: Streamlit runs as a `systemd` service on port 85
 ## Acknowledgements
 
 - Dataset: "Logistics and supply chain dataset" by datasetengineer on Kaggle (see `data/source/data.txt`). Check the dataset's license before reuse.
+
+**Live demo:** deployed on AWS EC2 and started on request (the server is stopped when idle to save cost). A recorded walkthrough is available on request.
